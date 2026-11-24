@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>マニュアル · RhinoTiger</title>
+<meta name="description" content="The manual for RhinoTiger, a firmware for the M-VAVE FM-1.">
+<style>
+/* paper and ink: warm white paper, ink-blue type, vermilion for what is played, mustard for asides; a shade of the
+   paper for code and callouts (CTL-1's; a firmware may restyle its site) */
+:root {
+  --paper: #fbf8f1; --sheet: #efe9dc; --rule: #ddd4c2; --ink: #1e2b5a; --muted: #5d6585;
+  --hot: #e5482e; --hot-t: #f8d3c9; --cool: #d9a21b; --cool-t: #f5e4b8;
+  --hot-ink: #c23a22;                                 /* the vermilion as text: 4.5:1 on the paper */
+  color-scheme: light;
+}
+body {
+  background: var(--paper); color: var(--ink); margin: 0;
+  font: 400 17px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding-inline: 16px; padding-block: 32px 64px;
+}
+main { max-width: 46rem; margin: 0 auto; }
+.page > .site { max-width: 46rem; margin-inline: auto; }
+main:focus { outline: none; }
+h1, h2, h3 { font-family: inherit; text-wrap: balance; line-height: 1.2; }
+h1 { font-size: 2.2rem; font-weight: 700; margin: 0 0 .4rem; letter-spacing: .02em; }
+h2 { font-size: 1.3rem; font-weight: 700; margin: 3rem 0 .8rem; padding-top: .8rem; border-top: 2px solid var(--ink); }
+h2 .num { color: var(--hot); margin-right: .5em; font-variant-numeric: tabular-nums; }
+h3 { font-size: 1.1rem; font-weight: 700; margin: 2rem 0 .5rem; }
+p, li { max-width: 65ch; }
+p { margin: 0 0 1rem; }
+ul, ol { padding-left: 1.3rem; margin: 0 0 1rem; }
+li { margin: .2rem 0; }
+li::marker { color: var(--hot); }
+strong { font-weight: 700; }
+a { color: var(--ink); text-decoration-color: var(--hot); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+a:hover { background: var(--hot-t); }
+:focus-visible { outline: 3px solid var(--hot-ink); outline-offset: 2px; }
+.skip { position: absolute; left: 16px; top: -100px; background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 0 0 6px 6px; z-index: 1; }
+.skip:focus { top: 0; }
+code, pre { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .86em; }
+code { background: var(--sheet); padding: .08em .35em; border-radius: 3px; }
+pre { background: var(--sheet); border-radius: 6px; padding: 14px 16px; overflow-x: auto; line-height: 1.45; margin: 0 0 1.2rem; }
+pre code { background: none; padding: 0; font-size: inherit; }
+hr { display: none; }
+.table { overflow-x: auto; margin: 0 0 1.3rem; }
+table { border-collapse: collapse; width: 100%; font-size: .95rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; vertical-align: top; padding: .45rem .7rem .45rem 0; border-bottom: 1px solid var(--rule); }
+th { font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: .78rem; color: var(--muted); border-bottom: 2px solid var(--ink); }
+td:first-child { white-space: nowrap; }
+.lede { margin-bottom: 1.6rem; }
+.status { background: var(--sheet); border-radius: 6px; padding: 12px 16px; }
+.status p { margin: 0; }
+.site { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem 1.2rem; margin: 0 0 1.6rem; padding-bottom: .5rem; border-bottom: 2px solid var(--ink); }
+.site .home { font-size: 1.1rem; font-weight: 700; letter-spacing: .04em; color: var(--ink); text-decoration: none; }
+.site .home:hover { color: var(--hot-ink); background: none; }
+.site nav { margin-left: auto; display: flex; flex-wrap: wrap; gap: .2rem 1rem; font-size: .92rem; }
+.site nav a { color: var(--ink); text-underline-offset: 3px; }
+.site nav a[aria-current] { text-decoration: none; color: var(--hot-ink); }
+a.home { color: inherit; text-decoration: none; }
+a.home:hover { background: none; color: var(--hot-ink); }
+main > a.home { display: inline-block; font-size: .9rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 .4rem; }
+.callout { border-left: 4px solid var(--cool); background: var(--cool-t); padding: 10px 16px; margin: 0 0 1.2rem; max-width: 65ch; border-radius: 0 6px 6px 0; }
+.callout p { margin: 0; }
+details { background: var(--sheet); border-radius: 6px; padding: 0 16px; margin: 0 0 1.2rem; }
+details > summary { cursor: pointer; padding: 10px 0; }
+details[open] > summary { margin-bottom: .4rem; }
+details > :last-child { margin-bottom: 1rem; }
+.swatch { display: inline-block; width: .7em; height: .7em; margin-right: .4em; vertical-align: .02em; }
+nav.contents ol { columns: 2 14rem; column-gap: 2rem; padding-left: 1.3rem; }
+.figs { display: flex; flex-wrap: wrap; gap: 20px; margin: .4rem 0 1.6rem; }
+figure { margin: 0; flex: 0 1 auto; }
+figure img { display: block; max-width: 100%; height: auto; }
+figure.shot img { width: 300px; image-rendering: pixelated; border-radius: 4px; box-shadow: 0 0 0 1px var(--rule); }
+figure.wide { flex-basis: 100%; }
+figure.wide img { width: 100%; }
+figcaption { color: var(--muted); font-size: .88rem; margin-top: .4rem; max-width: 300px; }
+figure.wide figcaption { max-width: none; }
+nav.contents li { break-inside: avoid; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+<!-- rhinotiger theme -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;600&family=Noto+Sans+JP:wght@400;700&display=swap">
+<style>
+/* SPDX-License-Identifier: GPL-3.0-only
+ * Copyright (C) 2026 hacha
+ * RhinoTiger's site, as its screen: black, the parts' neon hues (the kick's magenta, the bass's violet, the
+ * percussion's cyan, the events' acid, the line's gold), pale type. Put last in every page's <head> by
+ * app/site/theme.py, over fm1-base's paper (whatever the system's light or dark). */
+:root, :root:not([data-theme="light"]), :root[data-theme="dark"], :root[data-theme="light"] {
+  --rt-ground: #07060b; --rt-sheet: #14121d; --rt-rule: #2b2739; --rt-ink: #ebe8f3; --rt-muted: #a29cb6;
+  --rt-magenta: #ff4fc8; --rt-violet: #a774ff; --rt-cyan: #3fe6ff; --rt-acid: #b6f53b; --rt-gold: #ffc940;
+  --rt-cyan-t: rgba(63, 230, 255, .14); --rt-on-cyan: #021317;
+  --rt-neon: linear-gradient(90deg, var(--rt-magenta), var(--rt-violet) 30%, var(--rt-cyan) 55%, var(--rt-acid) 78%, var(--rt-gold));
+  /* the manual and the front page */
+  --paper: var(--rt-ground) !important; --sheet: var(--rt-sheet) !important; --rule: var(--rt-rule) !important;
+  --ink: var(--rt-ink) !important; --muted: var(--rt-muted) !important;
+  --hot: var(--rt-cyan) !important; --hot-t: var(--rt-cyan-t) !important; --hot-ink: var(--rt-cyan) !important;
+  --cool: var(--rt-gold) !important; --cool-t: var(--rt-sheet) !important;
+  /* the installer */
+  --bg: var(--rt-ground) !important; --fg: var(--rt-ink) !important; --dim: var(--rt-muted) !important;
+  --accent: var(--rt-cyan) !important; --on-accent: var(--rt-on-cyan) !important; --focus: var(--rt-gold) !important;
+  --bad: #ff7d8f !important;
+  /* the emulator */
+  --ground: var(--rt-ground) !important; --card: var(--rt-sheet) !important; --teal: var(--rt-cyan) !important;
+  color-scheme: dark !important;
+}
+html { background: var(--rt-ground); }
+body { font-family: "IBM Plex Sans", "Noto Sans JP", "Helvetica Neue", Arial, sans-serif; }
+:lang(ja) body, body:lang(ja) { font-family: "IBM Plex Sans", "Noto Sans JP", "Hiragino Sans", sans-serif; line-height: 1.8; }
+h1, h2, h3, .site .home, th { font-family: "Chakra Petch", "Noto Sans JP", "Helvetica Neue", Arial, sans-serif; }
+h2 .num { font-family: "Chakra Petch", ui-monospace, monospace; }
+
+/* the width follows the window; the contents beside the text when there is room */
+main, .page > .site { max-width: 60rem; }
+p, li { max-width: none; }
+.page { max-width: 80rem; margin: 0 auto; }
+
+/* the neon: the title, the rules, the header's line */
+h1 { background: var(--rt-neon); -webkit-background-clip: text; background-clip: text; color: transparent;
+     font-size: clamp(2.2rem, 5vw, 3.2rem); letter-spacing: .04em; }
+.site { border-bottom: 2px solid transparent !important; border-image: var(--rt-neon) 1; }
+.site .home { letter-spacing: .1em; text-transform: uppercase; }
+h2 { border-top: 1px solid var(--rt-rule) !important; position: relative; letter-spacing: .03em; }
+h2::before { content: ""; position: absolute; left: 0; top: -1px; width: 4.5rem; height: 2px; background: var(--rt-neon); }
+h2 .num { color: var(--rt-gold); }
+h3 { color: var(--rt-cyan); letter-spacing: .03em; }
+li::marker { color: var(--rt-magenta); }
+strong { color: #fff; }
+em { color: var(--rt-gold); font-style: normal; font-weight: 600; }
+a { color: var(--rt-ink); text-decoration-color: var(--rt-cyan); }
+main a, header nav a { color: var(--rt-cyan); }
+a:hover { background: var(--rt-cyan-t); }
+.site nav a[aria-current] { color: var(--rt-gold); }
+.site nav a[hreflang] { border: 1px solid var(--rt-rule); border-radius: 3px; padding: 0 .45em; text-decoration: none; }
+.site nav a[hreflang]:hover { border-color: var(--rt-cyan); }
+code { color: var(--rt-acid); background: var(--rt-sheet); }
+th { color: var(--rt-violet); border-bottom: 1px solid var(--rt-violet) !important; letter-spacing: .08em; }
+td:first-child { color: #fff; font-weight: 600; }
+tbody tr:hover td { background: rgba(255, 255, 255, .03); }
+
+/* the screen as it shows on the FM-1: its pixels, a thin frame */
+figure.shot img { width: 320px; image-rendering: pixelated; border-radius: 2px;
+                  box-shadow: 0 0 0 1px var(--rt-rule), 0 0 28px rgba(167, 116, 255, .12); }
+figcaption { max-width: 320px; }
+.figs { gap: 24px; }
+img { max-width: 100%; height: auto; }
+
+/* the contents: in the text on a narrow window, beside it on a wide one */
+nav.contents { background: var(--rt-sheet); border-radius: 6px; padding: .2rem 1.2rem .4rem; margin: 1rem 0 0; }
+nav.contents h2 { border: 0 !important; margin-top: .8rem; padding-top: 0; font-size: 1rem; color: var(--rt-muted); }
+nav.contents h2::before { display: none; }
+nav.contents li::marker { color: var(--rt-gold); }
+nav.contents a { text-decoration: none; color: var(--rt-ink); }
+nav.contents a:hover { color: var(--rt-cyan); }
+aside.toc { display: none; }
+@media (min-width: 1180px) {
+  .page.has-toc { display: grid; grid-template-columns: 14rem minmax(0, 1fr); column-gap: 3rem; }
+  .page.has-toc > .site { grid-column: 1 / -1; max-width: none; width: 100%; }
+  .page.has-toc > main { grid-column: 2; margin: 0; }
+  .page.has-toc main nav.contents { display: none; }
+  aside.toc { display: block; grid-column: 1; grid-row: 2; position: sticky; top: 1.5rem; align-self: start;
+              max-height: calc(100vh - 3rem); overflow-y: auto; font-size: .9rem; }
+  aside.toc h2 { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--rt-muted); margin: 0 0 .6rem; }
+  aside.toc ol { list-style: none; padding: 0; margin: 0; border-left: 1px solid var(--rt-rule); }
+  aside.toc li { margin: 0; }
+  aside.toc a { display: block; padding: .28rem 0 .28rem .9rem; margin-left: -1px; border-left: 2px solid transparent;
+                color: var(--rt-muted); text-decoration: none; line-height: 1.35; }
+  aside.toc a:hover { color: var(--rt-ink); background: none; }
+  aside.toc a.here { color: var(--rt-ink); border-left-color: var(--rt-cyan); }
+  aside.toc .n { color: var(--rt-gold); font-family: "Chakra Petch", monospace; margin-right: .5em; }
+}
+
+/* the emulator's own colours */
+.start button { background: var(--rt-cyan) !important; color: var(--rt-on-cyan) !important; }
+.held .btnface, .held .keyface { stroke: var(--rt-cyan) !important; }
+.latched .btnface, .latched .keyface { stroke: var(--rt-magenta) !important; }
+.hit:focus-visible { outline-color: var(--rt-gold) !important; box-shadow: 0 0 0 6px var(--rt-ground) !important; }
+</style>
+</head>
+<body>
+<a class="skip" href="#content">本文へ</a>
+<div class="page has-toc">
+<header class="site"><a class="home" href="../../ja/">RhinoTiger</a><nav><a href="../../emu/">エミュレーター</a><a href="../../install/">インストール</a><a href="./" aria-current="page">マニュアル</a><a href="https://github.com/hacha/rhinotiger">ソース</a><a href="../" lang="en" hreflang="en">English</a></nav></header>
+<aside class="toc" aria-label="目次"><h2>目次</h2>
+<ol><li><a href="#s1"><span class="n">1</span>インストール</a></li><li><a href="#s2"><span class="n">2</span>起動</a></li><li><a href="#s3"><span class="n">3</span>画面</a></li><li><a href="#s4"><span class="n">4</span>操作</a></li><li><a href="#s5"><span class="n">5</span>ページ</a></li><li><a href="#s6"><span class="n">6</span>鍵盤</a></li><li><a href="#s7"><span class="n">7</span>パフォーマンス</a></li><li><a href="#s8"><span class="n">8</span>セクション</a></li><li><a href="#s9"><span class="n">9</span>世界</a></li><li><a href="#s10"><span class="n">10</span>保存</a></li><li><a href="#s11"><span class="n">11</span>MIDI</a></li><li><a href="#s12"><span class="n">12</span>USB オーディオ</a></li><li><a href="#s13"><span class="n">13</span>困ったとき</a></li><li><a href="#s14"><span class="n">14</span>ライセンス</a></li></ol>
+</aside>
+<main id="content" tabindex="-1"><h1>マニュアル</h1>
+<p>RhinoTiger は、M-VAVE FM-1 のための、ダークサイからハイテックまでの自動生成サイケトランス・ファームウェアです。音楽はひとりで鳴ります。あなたは舵を取ります。4つのマクロノブ、ミュート付きのミックス、そして音楽に一発ものの音を投げ込む鍵盤で。キック、転がる FM ベース、パーカッション、くり返すライン、一発ものの音、持続するアトモスが、16分音符の格子の上で鳴ります。遅く湿ったものから速く細かいものまで8つの世界があり、それぞれの振る舞いを決めます。</p>
+<div class="figs"><figure class="shot"><img src="../img/screen-playing.png" alt="再生中の MAIN ページ。ヘッダーに COLD SIGNAL と 152、色のついた5段のステップ（KICK、BASS、PERC、EVENTS、LINE）、フレーズを示す8本の小節の列、下に Energy、Detail、Dark、Drift の4つのノブがすべて 50" loading="lazy"><figcaption>再生中の RhinoTiger</figcaption></figure></div>
+<hr>
+<nav class="contents" aria-label="目次"><h2 id="contents">目次</h2>
+<ol><li><a href="#s1">インストール</a></li><li><a href="#s2">起動</a></li><li><a href="#s3">画面</a></li><li><a href="#s4">操作</a></li><li><a href="#s5">ページ</a></li><li><a href="#s6">鍵盤</a></li><li><a href="#s7">パフォーマンス</a></li><li><a href="#s8">セクション</a></li><li><a href="#s9">世界</a></li><li><a href="#s10">保存</a></li><li><a href="#s11">MIDI</a></li><li><a href="#s12">USB オーディオ</a></li><li><a href="#s13">困ったとき</a></li><li><a href="#s14">ライセンス</a></li></ol>
+</nav>
+<hr>
+<h2 id="s1"><span class="num">1</span>インストール</h2>
+<p>まず試すなら、<a href="../../emu/">エミュレーター</a>を開いてください。同じコードがブラウザで音つきで動きます。</p>
+<p>ブラウザからインストールするには、Chrome か Edge を使います。FM-1 を USB でつなぎ、<a href="../../install/">インストーラー</a>を開いて Install を押します。ブラウザが MIDI の許可を一度だけ尋ねるので、許可してください。書き込み中はケーブルを抜かないでください。</p>
+<p>ターミナルからは、パッケージをダウンロードし、ソースの中で <code>python3 base/tools/fm1_install.py rhinotiger-VERSION.fwsc</code> を実行します。</p>
+<p>RhinoTiger が保存するのは自分の設定だけです。ほかのファームウェアが保存したもの（プロジェクト、プリセット、サンプル）は読みません。そのファームウェアに戻ったときに残っているとも限らないので、先にバックアップしてください。</p>
+<p>インストールは自己責任です。M-VAVE 純正のファームウェアに戻すには、インストーラーの「Back to the stock firmware」を使います。M-VAVE のファームウェア（FM-1.fwsc）をダウンロードし、そこで選んでボタンを押します。</p>
+<hr>
+<h2 id="s2"><span class="num">2</span>起動</h2>
+<p>FM-1 を起動するとロゴが出て、消えると、保存してある設定で音楽がひとりでに始まります（10. 保存 を参照）。</p>
+<div class="figs"><figure class="shot"><img src="../img/screen-logo.png" alt="ロゴ。色の輪に囲まれたサイとトラの顔、虹色の「犀」の下に「虎」、中ほどの帯に RHINOTIGER" loading="lazy"><figcaption>ロゴ</figcaption></figure></div>
+<p>待たずに始めるなら、ロゴが出ている間に PLAY を押します。</p>
+<p>音楽はまばらに始まり、パートがひとつずつ入ってきて、やがて全部がそろいます。</p>
+<p>PLAY で休みます。もう一度押すと、またまばらに始まります。</p>
+<hr>
+<h2 id="s3"><span class="num">3</span>画面</h2>
+<div class="figs"><figure class="wide"><img src="../img/screen-map.svg" alt="鳴っている MAIN ページの各部分に1から9の番号。1 世界の名前、2 テンポ、3 拍のランプ、4 レーン、5 フレーズ、6 投げた音の名前、7 ルールの左、8 ページの名前と棒、9 ノブ" loading="lazy"><figcaption>画面の各部分</figcaption></figure></div>
+<ol><li><strong>世界の名前</strong>（9. 世界 を参照）。鳴っている間は色が拍ごとに右へ流れ、休んでいる間は灰色です。ノブを回したりボタンを押したりした直後は、しばらくここに、何が起きたかが出ます。</li><li><strong>テンポ</strong>。1分あたりの拍数です。</li><li><strong>拍のランプ</strong>。拍ごとに点滅し、小節の頭では白く光ります。</li><li><strong>レーン</strong>。KICK、BASS、PERC、EVENTS、LINE の5段が、いま鳴っている小節を、16分音符ひとつにつき1マスで見せます。背の高い塊ほど強い打ち、点は休み、白いマスがいま鳴っている16分音符です。ラインは音の高さで描かれます。開いているページのパートがいちばん明るく、ミュートしたパートは暗くなります。</li><li><strong>フレーズ</strong>。8本の棒が8小節で、いま鳴っている小節が光ります。ブレイクやビルドの間は、そのセクションの小節を数えます（8. セクション を参照）。セクションを呼ぶと、次の小節まで <code>BREAK &gt;</code>、<code>BUILD &gt;</code>、<code>DROP &gt;</code> と出ます。</li><li><strong>投げた音</strong>。鍵盤から投げた一発ものの音の名前です（6. 鍵盤 を参照）。</li><li><strong>ルールの左</strong>。ALGORITHM で選んだものの名前が出ます（4. 操作 を参照）。ほかに、REC が待っている間は <code>REC: NEXT BAR</code>、取り込んでいる間は <code>REC: BAR 2/4</code>（6. 鍵盤 を参照）、AUTO PLAY の間はたった時間（5.5 を参照）、GLOBAL で保存していないものがあるときは <code>SAVE: KEEP IT</code> が出ます。</li><li><strong>ページ</strong>。開いているページの名前と、15ページぶんの小さな棒です。開いているページの棒が明るく光ります。</li><li><strong>ノブ</strong>。K1〜K4 の名前、値、細い棒です。回したばかりのノブは明るくなります。</li></ol>
+<p>レーンの代わりに別の絵が出るページが2つあります。MIX は6本のストリップのミキサー（5.13 を参照）、ECHO は16のエフェクトと6つのパートの格子です（7. パフォーマンス を参照）。</p>
+<p>色は音楽につれて動きます。色相がゆっくり一緒に揺れ、ブレイクでは沈み、ビルドではだんだん速く回り、ドロップで跳びます。パレットは GLOBAL の THEME で選びます（5.15 を参照）。</p>
+<p>ボタンはどれも暗く光り、開いているページのボタンは明るく光ります。ほかのボタンは、次のときに光ります。光の強さは GLOBAL の LIGHTS で決めます（5.15 を参照）。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: 画面 (ボタン, 光るとき)"><table><thead><tr><th>ボタン</th><th>光るとき</th></tr></thead><tbody><tr><td>PLAY</td><td>鳴っている間</td></tr><tr><td>SAVE</td><td>ブレイクが呼ばれているか、続いている間。GLOBAL では、保存していないものがある間</td></tr><tr><td>ARP</td><td>ビルドかドロップが呼ばれている間。ビルドの間は拍ごとに点滅</td></tr><tr><td>REC</td><td>次の小節を待つ間はすばやく点滅、取り込んでいる間は拍ごとに点滅、鍵盤のループが鳴っている間は点灯</td></tr><tr><td>OCT−</td><td>鍵盤のオクターブが0より下の間</td></tr><tr><td>OCT+</td><td>鍵盤のオクターブが0より上の間</td></tr></tbody></table></div>
+<hr>
+<h2 id="s4"><span class="num">4</span>操作</h2>
+<div class="figs"><figure class="wide"><img src="../img/panel.svg" alt="FM-1 のパネルの各部分に1から14の番号。1 MASTER、2 SELECT、3 PRESETS、4 ALGORITHM、5 OCT− と OCT+、6 画面、7 K1〜K4、8 ページのボタン（FX、SEL、ENV、LFO、EDIT、GLO、HOME、SEQ。色つき）、9 SAVE、10 ARP、11 PLAY、12 REC、13 黒鍵、14 白鍵" loading="lazy"><figcaption>パネル</figcaption></figure></div>
+<h3 id="h1">ページを開く</h3>
+<p><strong>SELECT（2）を回すと、15のページを MAIN から GLOBAL まで順に巡ります。</strong> どのページも、これで開けます。端で止まります。</p>
+<p><strong>色をつけたボタン（8）は、ページへのショートカットです。</strong> 押すとそのページへ飛び、続けて押すと、同じボタンのページを順に切り替えます。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: ページを開く (ボタン, ページ)"><table><thead><tr><th>ボタン</th><th>ページ</th></tr></thead><tbody><tr><td>HOME</td><td>MAIN、GROOVE</td></tr><tr><td>SEQ</td><td>BREAK、BUILD、AUTO</td></tr><tr><td>SEL</td><td>KICK、BASS</td></tr><tr><td>ENV</td><td>PERC、EVENTS</td></tr><tr><td>LFO</td><td>LINE、LINE SEQ、ATMOS</td></tr><tr><td>EDIT</td><td>MIX</td></tr><tr><td>FX</td><td>ECHO</td></tr><tr><td>GLO</td><td>GLOBAL</td></tr></tbody></table></div>
+<p>LFO だけは、LINE と LINE SEQ で半秒押し続けると、ページは動かずに、次の小節からラインのフレーズが描き直されます（5.10 を参照）。</p>
+<h3 id="h2">そのほかの操作</h3>
+<div class="table" tabindex="0" role="region" aria-label="Table: そのほかの操作 (番号, 操作, 働き)"><table><thead><tr><th>番号</th><th>操作</th><th>働き</th></tr></thead><tbody><tr><td>1</td><td>MASTER</td><td>音量。</td></tr><tr><td>3</td><td>PRESETS</td><td>世界を選びます。8つあり、端まで行くとぐるりと回ります。次の小節から新しい世界になります（9. 世界 を参照）。</td></tr><tr><td>4</td><td>ALGORITHM</td><td>開いているページの種類を選びます（下を参照）。</td></tr><tr><td>5</td><td>OCT− · OCT+</td><td>鍵盤のオクターブを1つずつ動かします。1つ下から2つ上まで（6. 鍵盤 を参照）。</td></tr><tr><td>7</td><td>K1〜K4</td><td>開いているページの4つのノブ。範囲の広いノブ（0〜100 と FEEDBACK）は、ゆっくり回すと1刻みで1ずつ、速く回すと2ずつ、さらに速いと4ずつ動きます。</td></tr><tr><td>9</td><td>SAVE</td><td>ブレイクを呼びます（8. セクション を参照）。GLOBAL でだけは保存のボタンで、軽く押すとすべてを保存、1.5秒押し続けると初期値に戻します（10. 保存 を参照）。</td></tr><tr><td>10</td><td>ARP</td><td>ビルド、そしてドロップを呼びます（8. セクション を参照）。</td></tr><tr><td>11</td><td>PLAY</td><td>鳴らす、または休む。休んだあとは頭からやり直します。</td></tr><tr><td>12</td><td>REC</td><td>軽く押すと、次の小節から、鍵盤が投げたものが最大4小節のループに取り込まれます。取り込んでいる間に押すとそこで終わり、長押しでループが消えます（6. 鍵盤 を参照）。</td></tr><tr><td>13</td><td>黒鍵</td><td>押している間、白鍵がそのリズムで音を投げます（6. 鍵盤 を参照）。ECHO ページでは、パートの操作です（7. パフォーマンス を参照）。</td></tr><tr><td>14</td><td>白鍵</td><td>音楽に一発ものの音を投げ込みます（6. 鍵盤 を参照）。ECHO ページでは、エフェクトです（7. パフォーマンス を参照）。</td></tr></tbody></table></div>
+<p>ALGORITHM はページによって働きが違います。選んだものの名前はルールの左に出ます。それぞれの種類や形は、各ページで紹介します。これらは保存されません（10. 保存 を参照）。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: そのほかの操作 (ページ, ALGORITHM で選ぶもの)"><table><thead><tr><th>ページ</th><th>ALGORITHM で選ぶもの</th></tr></thead><tbody><tr><td>MAIN</td><td>キットを回します。進めると、鳴っているパートのうちひとつか数個が、次の小節から別の種類になります。一小節のうちに多く回すほど多く変わり、最大3パートまで。戻すと、ひとつ前のキットへ（8回前まで）。</td></tr><tr><td>GROOVE</td><td>ベースの形。</td></tr><tr><td>KICK、BASS、PERC、EVENTS、LINE、LINE SEQ、ATMOS</td><td>そのパートの種類（5つか6つ）。そのパートの次の音から変わります。</td></tr><tr><td>MIX</td><td>TRACK で選んでいるパートの種類。</td></tr><tr><td>ECHO</td><td>エコーの種類。</td></tr><tr><td>BREAK、BUILD、AUTO、GLOBAL</td><td>何もしません。</td></tr></tbody></table></div>
+<hr>
+<h2 id="s5"><span class="num">5</span>ページ</h2>
+<p>15あります。4つのノブはいつも開いているページのものです。各ノブについて、回すと何が聞こえるかを書きます。括弧の中は初期値です。パートの音量とエコーへの送りは、MIX にだけあります（5.13 を参照）。</p>
+<h3 id="s5-1">5.1 MAIN</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-main.png" alt="MAIN のページ。4つのマクロ Energy、Detail、Dark、Drift がすべて 50" loading="lazy"><figcaption>MAIN</figcaption></figure></div>
+<p>4つのマクロです。それぞれが音楽のいくつかのことを一度に傾け、真ん中が中立です。50 なら世界のままです。</p>
+<ul><li>ENERGY（初期値: 50）: にぎやかか、まばらか。上げると一発ものの音が増え、ラインが賑わい、ハットが増え、休むパートが減ります（GROOVE を参照）。下げると薄くなります。</li><li>DETAIL（初期値: 50）: 細かいか、素朴か。上げると、一発ものの音の連打が増えて長くなり、高いところでは速くなり、ときどきハットに素早い2連打が入ります。下げると単発のままです。</li><li>DARK（初期値: 50）: 暗く奇妙か、明るく素直か。上げるとベースが暗くなり、一発ものの音が低いほうと中ほうへ寄り、ざらつく音程が増え、ラインが半音で這い、高くまで届きます。下げると明るく開けます。</li><li>DRIFT（初期値: 50）: 勝手にどれだけ変わるか。上げると、フレーズごとに一発ものの音がより多く描き直され、ベースがより大きく開閉し、ラインがより多く書き換えられ、ブレイクが勝手に来る頻度が増え（8. セクション を参照）、ドロップでベースの種類が変わることも増えます。また、FILLS、GAP、ブレイクとビルドの LENGTH が、ひとつ短いほうか長いほうへ外れることも増えます（GROOVE、BREAK、BUILD を参照）。0 ではひとりでは何も動かず、ブレイクも勝手には来ず、それらの長さはぴったりになります。</li></ul>
+<p>ALGORITHM でキットが回ります。BREAK の MORPH で、ときどきひとりでにも回ります。変わったものは、ヘッダーにしばらく出て、それぞれの種類がそのパートの色で出ます。</p>
+<div class="figs"><figure class="shot"><img src="../img/screen-kit.png" alt="キットが変わったあとのヘッダー。KIT GLASS K-B-B-B と、ラインの新しい種類とベースの新しい形" loading="lazy"><figcaption>キットが変わったところ</figcaption></figure></div>
+<h3 id="s5-2">5.2 GROOVE</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-groove.png" alt="GROOVE のページ。Tempo 152、Root F#、Fills 8、Sit out 25" loading="lazy"><figcaption>GROOVE</figcaption></figure></div>
+<p>グルーヴの土台です。速さ、根音、フィル、パーカッションの休み。</p>
+<ul><li>TEMPO（初期値: 世界のまま）: 速さ。1分あたりの拍数で出ます。世界のテンポから最大20、速くも遅くも動かせます。</li><li>ROOT（初期値: 世界のまま）: ベースとキックの土台になる音。音名で出ます。最大で半音5つ下、6つ上へ動かせます。</li><li>FILLS（初期値: 8）: 小節の最後の拍がフィルになる頻度（ベースが休み、クラップが駆け上がります）と、フレーズの終わりにキックがひねりを入れる頻度。OFF、または32、16、8、4小節ごと。これはふだんの間隔で、しばらくその半分や倍になることがあります。DRIFT が高いほど多く。フィルはいつも、4、8、16、32小節の区切りの終わりに入ります。</li><li>SIT OUT（初期値: 25）: パーカッション（ハット、オープンハット、クラップ、ライド）のどれかが、フレーズひとつぶん休む頻度。0 なら休みません。</li></ul>
+<p>ALGORITHM でベースの形を選びます。新しい形は次の小節から始まります。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: 5.2 GROOVE (形, 鳴り方)"><table><thead><tr><th>形</th><th>鳴り方</th></tr></thead><tbody><tr><td>AUTO</td><td>世界に任せます。拍ごとにキック、そのあとの3つの16分音符でベースが転がり、ときどきギャロップ、裏拍、3連の小節が入ります（3連は入る世界だけ）。</td></tr><tr><td>K-B-B-B</td><td>転がりのまま。</td></tr><tr><td>GALLOP</td><td>ギャロップのまま。</td></tr><tr><td>OFFBEAT</td><td>裏拍のまま。</td></tr></tbody></table></div>
+<h3 id="s5-3">5.3 BREAK</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-phase.png" alt="BREAK のページ。Breaks 50、Length WORLD、Gap 64、Morph 40" loading="lazy"><figcaption>BREAK</figcaption></figure></div>
+<p>ブレイクのページです。ブレイク、ビルド、ドロップを、音楽がひとりでどう進むか、そして音色がひとりでどう変わるか。自分で呼ぶには SAVE と ARP を押します（8. セクション を参照）。</p>
+<ul><li>BREAKS（初期値: 50）: ブレイクが勝手に来る頻度。0 では CUED と出て、呼んだときしか来ません。上げるほど頻繁で、DRIFT の影響も受けます。</li><li>LENGTH（初期値: WORLD）: 勝手に来たブレイクのふだんの長さ。WORLD は世界に任せ、または 4、8、16、32小節。ときどき、その半分か倍の長さになります。DRIFT が高いほど多く。</li><li>GAP（初期値: 64）: ドロップから、次の勝手なブレイクまでの最短の小節数。32、64、96、128。ドロップによっては、ひとつ短いか長くなります。DRIFT が高いほど多く。</li><li>MORPH（初期値: 40）: キットがひとりでに変わる頻度。MAIN で ALGORITHM を回したときのように、パートのひとつか数個が別の種類になります。ドロップのときと、グルーヴが長く続くときは32小節ごと（その半分の頻度）に起きることがあります。上げるほど頻繁で、一度に変わるパートも増えます。変わったものはヘッダーに出ます。0 では ALGORITHM を回したときしか変わりません。</li></ul>
+<h3 id="s5-4">5.4 BUILD</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-buildpage.png" alt="BUILD のページ。Type AUTO、Ending AUTO、Length 4" loading="lazy"><figcaption>BUILD</figcaption></figure></div>
+<p>どんなビルドが来て、どう終わるか。どのビルドにもライザーがつきます。</p>
+<ul><li>TYPE（初期値: AUTO）: ビルドの種類。AUTO は、世界の好みに沿って毎回ほかのどれかを選びます。続けて同じものにはなりません。</li><li>ENDING（初期値: AUTO）: ビルドの最後の小節で何が起きるか（FAKE では、短いドロップの前の小節）。AUTO は毎回ほかのどれかを選び、続けて同じものにはなりません。</li><li>LENGTH（初期値: 4）: ふだんのビルドの長さ。2、4、8小節。ときどき、ひとつ長いビルドになり、それよりまれに、ひとつ短いビルドになります。どちらも DRIFT が高いほど多く。</li></ul>
+<p>ビルドが鳴っている間は、ルールの左に <code>NOW</code> と、いま鳴っている種類と終わり方が出ます。AUTO が何を選んだかがわかります。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: 5.4 BUILD (TYPE, 鳴り方)"><table><thead><tr><th>TYPE</th><th>鳴り方</th></tr></thead><tbody><tr><td>ROLL</td><td>キックとベースが抜け、クラップが4分、8分、16分と転がります。</td></tr><tr><td>KICK</td><td>キックが同じように転がり、1オクターブ上がります。ベースは抜けます。</td></tr><tr><td>FILTER</td><td>キックは残り、パーカッションは2つめの4分から、ベースは半ばから入り、ベースは下を削られ、ハットは強くなります。</td></tr><tr><td>TRIPLET</td><td>クラップが4分、8分3連、16分3連と上がるように転がります。</td></tr><tr><td>STUTTER</td><td>グルーヴが続いたまま、だんだん小さな切れ端で繰り返されます。4分、8分、16分、32分。</td></tr><tr><td>POLY</td><td>キックが小節に対して付点8分、やがて付点16分、そして16分へと詰まり、クラップは2拍めと4拍めに入ります。</td></tr><tr><td>SINK</td><td>逆向き。クラップが16分、8分、4分と遅く落ちていくように転がり、ほかは上から閉じていきます。</td></tr><tr><td>FAKE</td><td>ROLL のあと、1拍だけのドロップが入って途中で切れ、1小節ぶんのクラップの16分があって、本物のドロップが来ます。</td></tr><tr><td>HALF</td><td>グルーヴがハーフタイムに落ちます。キックは1拍めと3拍め、クラップは3拍め。ドロップで元の速さに戻ります。</td></tr><tr><td>ACID</td><td>キックが抜け、ベースだけが16分で鳴り続け、3つめごとに1オクターブ上がります。ベースの噛みがどんどん開き、叫ぶようになります。ハットは裏拍に入ります。</td></tr><tr><td>STAIRS</td><td>グルーヴは続いたまま、ベース、ライン、アトモスが、ビルドの4分の1ごとに短3度ずつ上がっていきます。</td></tr><tr><td>GATE</td><td>グルーヴは続いたまま刻まれます。4分、8分、16分、32分と細かくなり、それぞれの前半だけが鳴ります。</td></tr></tbody></table></div>
+<div class="table" tabindex="0" role="region" aria-label="Table: 5.4 BUILD (ENDING, 鳴り方)"><table><thead><tr><th>ENDING</th><th>鳴り方</th></tr></thead><tbody><tr><td>BREATH</td><td>最後の拍が無音になります。</td></tr><tr><td>RUSH</td><td>無音なし。最後の拍でロールが倍の速さになり、そのままドロップへ。</td></tr><tr><td>VOID</td><td>最後の小節が空になり、ライザーだけが残って、最後の拍は無音です。2小節のビルドでは最後の2拍。</td></tr><tr><td>TAPE</td><td>最後の2拍で、音楽がゆっくり止まります。</td></tr><tr><td>REVERSE</td><td>最後の拍で、その前の拍が逆回転で鳴ります。</td></tr><tr><td>ECHO</td><td>3拍めがエコーに投げ込まれ、最後の拍はその繰り返しだけが鳴ります。</td></tr><tr><td>PICKUP</td><td>最後の拍は無音ですが、最後の16分だけキックとベースが入り、ドロップへ踏み込みます。</td></tr></tbody></table></div>
+<h3 id="s5-5">5.5 AUTO</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-auto.png" alt="AUTO のページ。Auto play OFF、Minutes 60、Seed RANDOM、Perform 50" loading="lazy"><figcaption>AUTO</figcaption></figure></div>
+<p>AUTO PLAY は、DJ のように、ひとつのセットをまるごとひとりで鳴らします。世界を渡り、テンポとキーを動かし、ブレイクとビルドを呼び、独自の曲線に沿って音楽を高めたり静めたりします。エフェクトを弾き、パートを抜いては戻し、鍵盤のように音を投げます。</p>
+<ul><li>AUTO PLAY（初期値: OFF）: 右で ON、左で OFF。</li><li>MINUTES（初期値: 60）: セットの長さ。30、60、90分、または ENDLESS（終わりなし）。</li><li>SEED（初期値: RANDOM）: どのセットか。1から99まで、番号ごとに別の組み立てです。世界、テンポ、キー、どこで高まりどこで静まるか。休んでいるところから始めれば、同じ番号、同じ MINUTES、同じテンポで同じ組み立てになります。その中で鳴る音は、毎回違います。RANDOM は番号をひとつ選び、セットの間はその番号が出ます。</li><li>PERFORM（初期値: 50）: エフェクト、パートの抜き差し、鍵盤の音をどれだけ使うか。0 ではどれもあなたに任せます（章のつなぎ目やグルーヴの終わり、始まりでパートを抜くのは、セットの組み立てとして残ります）。</li></ul>
+<p>音楽が休んでいるときに ON にすると、セットは始まりで PLAY を待ちます。鳴っているときに ON にすると、そこから続けます。MINUTES と SEED を回せるのは OFF の間だけです。PERFORM はいつでも回せます。MAIN、BREAK、AUTO では、ルールの左にセットのたった時間が <code>12:34</code>（1時間を超えると <code>1:02:34</code>）のように出ます。その右のルールの線はバーになり、セットのどこまで来たかだけ光ります。線の目盛りは章の区切りです。ENDLESS では、バーは1時間ごとに始めから進みます。</p>
+<p>セットは、数分ずつの章でできていて、章はそれぞれ1曲のように進みます。いくつかのグルーヴがあり、それぞれ終わり方が違います。そのひとつが章の「大きなブレイク」で、長いブレイクとビルドを経てドロップに入ります。ほかは、短いブレイクからすぐドロップ、グルーヴからそのままビルド、パートを抜くかフィルターをかけて自分のドロップへ、のどれかです。いちばん高い章がセットの頂点で、そのブレイクはいちばん長く、ひとつ前の章は抑えられます。セットの始まりも、少しずつ入ってきます。ラインとイベントは、ほかより少し遅れて入ります。</p>
+<p>章から次の章へは、DJ が曲をつなぐように、3とおりのどれかで変わります。大きなブレイクを通って、ドロップで世界とキーが変わる。次の章のブレイクへ、そのブレイクの始まりで世界とキーが変わる。グルーヴの中で、古い章が薄くなり（低音、ベース、キックが抜けていき）、ドロップで新しい世界とキーが来て、新しい章がパートごとに入ってくる。世界とキーが変わるのは、ここだけです。テンポはずっとなめらかに動きます。セットは、ON にしたときのテンポから始まります。休んでいるときは GROOVE の TEMPO で、鳴っているときはいまのテンポで（MIDI クロックがあればそのテンポで）、セットの速さを決められます。そのあとのテンポも全部、同じだけずれて動き、125〜206 BPM に収まります。30、60、90分のセットは、最後のブレイクで静かに消えていき、音楽が休みます。その最後のブレイクで ARP を押すと、AUTO PLAY は OFF になり、音楽がそのまま続きます。</p>
+<p>章ごとに、いくつかの音と、その章の間くり返し現れる短いモチーフがあります。エフェクトとパートは、おもにフレーズの終わりで動きます。その間は、レーンの代わりに ECHO ページのエフェクト（7. パフォーマンス を参照）が表示され、鳴っているエフェクトは明るく、抜けているパートは暗くなります。開いているページとそのノブ、鍵盤の働きは変わりません。何かに触ると、そのページの絵に戻ります。AUTO PLAY が弾いている鍵は、押したときと同じように光ります。ECHO ページでは、暗いパートの黒鍵を押すと、そのパートが戻ります。ATMOS だけは切らずに、ときどきゆっくり下げて、またゆっくり上げます。MIX のフェーダーも一緒に動きます（5.13 を参照）。</p>
+<p>一緒に弾けます。セットが動かしているもの（MAIN の4つのノブ、TEMPO、ROOT、BREAKS、ビルドの LENGTH）を回すと、32小節のあいだあなたのものになり、そのあとセットに戻ります。MAIN の4つのノブと TEMPO は少しずつ、BREAKS と LENGTH は一度に、ROOT は次の章で戻ります（章が変わる直前に回すと、次の章の間も続きます）。PRESETS で選んだ世界は、次の章まで続きます。呼んだブレイク、ビルド、ドロップには、セットがついていきます（呼んだブレイクは、長くても32小節でビルドへ進みます）。大きなブレイクを通って変わる章の最後のブレイクかビルドでドロップを呼ぶと、次の章になります。エフェクトを自分で弾くと、32小節のあいだ、エフェクトとパートの抜き差しはあなたに任されます。パートをミュートするか戻すと、そのパートには同じだけ触らず、どれかがミュートされている間はパートを抜きません。ATMOS の LEVEL を回すと、下がっていた ATMOS は戻り、同じだけ触られません。鍵盤で音を投げるか REC を押すと、32小節のあいだと、REC のループが鳴っている間は、セットは音を投げません。ほかのものは、いつもどおりあなたのものです。</p>
+<p>OFF にすると、音楽はそのまま続き、ノブはセットが置いたところに残ります。セットの間に SAVE で保存されるのは、セットの値ではなく、あなたの設定です。セットが終わると、あなたの設定に戻ります。</p>
+<h3 id="s5-6">5.6 KICK</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-kick.png" alt="KICK のページ。ルールに SOLID、Tune 0、Drive 50、Punch 50、Decay 50、KICK のレーンがいちばん明るい" loading="lazy"><figcaption>KICK</figcaption></figure></div>
+<p>キックの音です。</p>
+<ul><li>TUNE（初期値: 0）: キックの音程。半音6つまで下にも上にも。0 より上は + 付きで出ます。</li><li>DRIVE（初期値: 50）: 歪ませる強さ。やわらかくきれいなものから荒いものへ。</li><li>PUNCH（初期値: 50）: 出だしのクリックの鋭さ。</li><li>DECAY（初期値: 50）: 胴の長さ。短く締まったものから、長く満ちたものへ。</li></ul>
+<p>ALGORITHM で種類を選びます。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: 5.6 KICK (種類, 音)"><table><thead><tr><th>種類</th><th>音</th></tr></thead><tbody><tr><td>SOLID</td><td>世界のまま。</td></tr><tr><td>HARD</td><td>落ち方が速く、クリックが大きく、歪みも多い。</td></tr><tr><td>KNOCK</td><td>短く、ブーンの下に木が鳴る。</td></tr><tr><td>ZIP</td><td>高いところからゆっくり落ちる、暗いキックのジッ。</td></tr><tr><td>CRACK</td><td>速く落ちて締まり、上に明るいノイズがはじける。ハイテックのキックの破裂音。</td></tr></tbody></table></div>
+<h3 id="s5-7">5.7 BASS</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-bass.png" alt="BASS のページ。ルールに ROUND、Bite 50、Decay 50、Length 50、Drive 50" loading="lazy"><figcaption>BASS</figcaption></figure></div>
+<p>転がる FM ベースの音です。</p>
+<ul><li>BITE（初期値: 50）: 各音の出だしの噛みつき。丸いものから唸るものへ。</li><li>DECAY（初期値: 50）: その噛みつきがどれだけ続くか。下げると丸く、上げると音の間ずっと唸りが残ります。</li><li>LENGTH（初期値: 50）: 各音の長さ。短く弾ける音（世界の4分の1）から、音として許される限りの長さまで。</li><li>DRIVE（初期値: 50）: ベースを歪ませる強さ。</li></ul>
+<p>ALGORITHM で種類（ベースの色）を選びます。たいていのドロップで、ひとりでほかのものに変わります。DRIFT が低いほど、同じまま続くことが増えます。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: 5.7 BASS (種類, 音)"><table><thead><tr><th>種類</th><th>音</th></tr></thead><tbody><tr><td>ROUND</td><td>丸い、もとの音。</td></tr><tr><td>BITTEN</td><td>噛みつきが強い。</td></tr><tr><td>METAL</td><td>金属的で、倍音が音程からずれる。</td></tr><tr><td>HOLLOW</td><td>1オクターブ下の響きが混じる、太い音。</td></tr><tr><td>SNAP</td><td>各音の頭に硬いクリック、その下は丸い。</td></tr><tr><td>NASAL</td><td>中の空いた、鼻にかかったブザー。</td></tr></tbody></table></div>
+<h3 id="s5-8">5.8 PERC</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-perc.png" alt="PERC のページ。ルールに HISS、Hats 50、Open 50、Clap 50、Tone 50" loading="lazy"><figcaption>PERC</figcaption></figure></div>
+<p>パーカッション（ハット、オープンハット、クラップ、ライド）です。</p>
+<ul><li>HATS（初期値: 50）: 閉じたハットの音量と、弱い16分音符のどれだけが鳴るか。0 ではハットもオープンハットもありません。</li><li>OPEN（初期値: 50）: オープンハットの響く長さ。世界の4分の1から4倍まで。</li><li>CLAP（初期値: 50）: 2拍めと4拍めのクラップの音量。0 でなし。</li><li>TONE（初期値: 50）: 50 より下ではパーカッション全体が暗くなり、0 でこもります。50 より上ではハットが細くなり、クラップの帯が上がります。50 はそのまま。</li></ul>
+<p>ALGORITHM で種類を選びます。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: 5.8 PERC (種類, 音)"><table><thead><tr><th>種類</th><th>音</th></tr></thead><tbody><tr><td>HISS</td><td>世界のまま。</td></tr><tr><td>TIN</td><td>長く響く、小さな安物のシンバル。</td></tr><tr><td>TICK</td><td>短く細い、乾いたチック。</td></tr><tr><td>GRIT</td><td>階段状に粗くしたノイズ。機械のなかの埃。</td></tr><tr><td>SEED</td><td>低めの狭い帯のノイズがゆっくりふくらみ、まばらな粒でパラパラ鳴る。シェイカーの種。</td></tr></tbody></table></div>
+<h3 id="s5-9">5.9 EVENTS</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-events.png" alt="EVENTS のページ。ルールに ALIVE、Density 50、Runs 50、Pitch 0、Spread 50" loading="lazy"><figcaption>EVENTS</figcaption></figure></div>
+<p>イベントは、ダークサイやハイテックを形づくる一発ものの音です。ザップ、うがい音、ダイブ、唸り、さえずり、レーザーが、単発か、連なり（音程の階段、ロール）で鳴ります。音楽は、裏拍に4小節ぶんのイベントをループとして持ち、フレーズごとにいくつかが変わります。鍵盤から投げたものも、そこに加わります（6. 鍵盤 を参照）。</p>
+<ul><li>DENSITY（初期値: 50）: どれだけ多いか。</li><li>RUNS（初期値: 50）: そのうち、単発でなく連なりになるものがどれだけか。</li><li>PITCH（初期値: 0）: すべての音程。1オクターブまで下にも上にも。</li><li>SPREAD（初期値: 50）: ステレオでの広がり。0 ですべて真ん中、50 でそれぞれ作られたとおり、100 に向かうと大きく左右へ散り、ひとつひとつが片側からもう片側へ横切ります。</li></ul>
+<p>ALGORITHM で種類を選びます。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: 5.9 EVENTS (種類, 音)"><table><thead><tr><th>種類</th><th>音</th></tr></thead><tbody><tr><td>ALIVE</td><td>そのまま。</td></tr><tr><td>METAL</td><td>打たれた板や針金。</td></tr><tr><td>LIQUID</td><td>水の中の音。ゆっくり深く揺れる。</td></tr><tr><td>SHARD</td><td>短く荒い。割れたガラスか、機械の故障。</td></tr><tr><td>GHOST</td><td>逆回し。無からふくらみ、いちばん大きいところで切れる、吸い込まれる音。</td></tr><tr><td>RATCHET</td><td>1秒に20〜30回途切れながら長く鳴る、機械の歯。</td></tr></tbody></table></div>
+<h3 id="s5-10">5.10 LINE</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-line.png" alt="LINE のページ。ルールに ACID、Bite 50、Decay 50、Length 50、Drive 0" loading="lazy"><figcaption>LINE</figcaption></figure></div>
+<p>ラインは、くり返すフレーズです。16分音符で2小節、ベースの上の高いところで鳴ります。導入のあとに入り、フレーズごとに鳴るか休むかが決まります。ほとんどいつも鳴らす世界もあれば、めったに鳴らさない世界もあります。音は世界の音階からでたらめに引かれ、その動きは LINE SEQ にあります。</p>
+<ul><li>BITE（初期値: 50）: 各音の出だしの噛みつき。こもったものから明るいものへ。</li><li>DECAY（初期値: 50）: その噛みつきが消える速さ。素早いものから、長い膨らみへ。</li><li>LENGTH（初期値: 50）: 各音の長さ。切り詰めたものから長いものへ。</li><li>DRIVE（初期値: 0）: 歪ませる強さ。0 できれいなまま。</li></ul>
+<p>ALGORITHM で種類を選びます。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: 5.10 LINE (種類, 音)"><table><thead><tr><th>種類</th><th>音</th></tr></thead><tbody><tr><td>ACID</td><td>世界のまま。</td></tr><tr><td>GLASS</td><td>やわらかく響く、打たれたガラス。</td></tr><tr><td>GROWL</td><td>深く揺れて歪む喉。</td></tr><tr><td>REED</td><td>噛みつきが落ちない、安定したブザー。</td></tr><tr><td>BEND</td><td>各音に5度ほど上から落ちて入る、ゴムのような音。</td></tr><tr><td>CRUSH</td><td>音を粗い段に砕く、壊れた機械。</td></tr></tbody></table></div>
+<p>このページで LFO を押し続けると、次の小節からフレーズが描き直されます。メッセージは <code>NEW PHRASE</code> です。</p>
+<h3 id="s5-11">5.11 LINE SEQ</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-line-seq.png" alt="LINE SEQ のページ。ルールに ACID、Density 50、Mutate 50、Range 50、Slide 50" loading="lazy"><figcaption>LINE SEQ</figcaption></figure></div>
+<p>ラインのフレーズそのものです。32のステップがすべて一度に効くので、変化はすぐに聞こえます。</p>
+<ul><li>DENSITY（初期値: 50）: 32ステップのうちいくつが鳴るか。裏拍に寄ります。</li><li>MUTATE（初期値: 50）: 4小節ごとに書き換えられるステップの数。DRIFT がそれに加わります。</li><li>RANGE（初期値: 50）: 音がどれだけ高くまで届くか。0 では根音から離れず、100 では世界の範囲の2倍まで届きます。</li><li>SLIDE（初期値: 50）: 次の音へすべるものがどれだけあるか。</li></ul>
+<p>ALGORITHM で種類を選びます。LINE と同じです。LFO の長押しでフレーズを描き直せるのも同じです（<code>NEW PHRASE</code>）。</p>
+<h3 id="s5-12">5.12 ATMOS</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-atmos.png" alt="ATMOS のページ。ルールに MIST、Colour 50、Air 50、Motion 50、Depth 50" loading="lazy"><figcaption>ATMOS</figcaption></figure></div>
+<p>アトモスは、音楽の下に持続する和音です。各音は左右に少しずれ、さまようノイズの帯が添います。グルーヴの下では、世界が決めた小ささで静かに鳴り、ブレイクで前に出て、ドロップのあと引っ込みます。</p>
+<ul><li>COLOUR（初期値: 50）: 暗く空洞のものから、明るく開けたものへ。ビルドが上がるにつれ、ひとりでに開きます。</li><li>AIR（初期値: 50）: さまようノイズがどれだけあるか。</li><li>MOTION（初期値: 50）: 和音が揺れる速さ。80秒に1回ほどから、1秒に1回に近いほどまで。50 より上では、揺れが音を開いたり閉じたりもします。</li><li>DEPTH（初期値: 50）: どれだけ大きく揺れるか。</li></ul>
+<p>ALGORITHM で種類を選びます。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: 5.12 ATMOS (種類, 音)"><table><thead><tr><th>種類</th><th>音</th></tr></thead><tbody><tr><td>MIST</td><td>世界のまま。やわらかい。</td></tr><tr><td>CHIME</td><td>明るい、遠くの鐘。</td></tr><tr><td>DRONE</td><td>深く暗く、ゆっくりうなる響き。</td></tr><tr><td>GRAIN</td><td>和音を粒に砕く。空気が多い、森のざわめき。</td></tr><tr><td>PULSE</td><td>和音を音楽に合わせて16分の模様で刻む。グルーヴと一緒に息をするパッド。</td></tr></tbody></table></div>
+<h3 id="s5-13">5.13 MIX</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-mix.png" alt="MIX のページ。KICK、BASS、PERC、EVT、LINE、ATM の6本のストリップとメーター、PERC が枠で囲まれ、ルールの左に HISS、ノブは Track PERC、Level 80、Send 0、Mute OFF" loading="lazy"><figcaption>MIX</figcaption></figure></div>
+<p>ミキサーです。6つのパートそれぞれにストリップがあります。メーターは、そのパートが鳴るにつれて点灯します。横には音量の細い溝とつまみがあり、名前の下には、エコーへの送りを示す短い棒があります。ノブが効いているトラックには枠がつきます。ミュートしたパートは暗くなります。ALGORITHM では、そのトラックのパートの種類を、パートのページと同じように選べます。その名前はルールの左に出ます。</p>
+<ul><li>TRACK（初期値: KICK）: 次の3つのノブが効くパート。KICK、BASS、PERC、EVENTS、LINE、ATMOS（ストリップでは EVT、ATM）。</li><li>LEVEL（初期値: KICK、BASS、PERC、EVENTS は 80、LINE と ATMOS は 70）: そのパートの音量。</li><li>SEND（初期値: PERC は 0、EVENTS、LINE、ATMOS は 50）: そのパートがエコーへどれだけ入るか。キックとベースには送りがなく、ノブは空白です。</li><li>MUTE（初期値: OFF）: 右に回すとそのパートをミュート、左に回すと戻ります。ECHO の黒鍵と同じです（7. パフォーマンス を参照）。</li></ul>
+<h3 id="s5-14">5.14 ECHO</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-echo.png" alt="ECHO のページ。16のエフェクトと6つのパートの格子、ルールに PING-PONG、Feedback 42、Tone 50、Time 3/16、Level 50" loading="lazy"><figcaption>ECHO</figcaption></figure></div>
+<p>各パートの送りが入るエコーと、鍵盤のパフォーマンスです。このページでは、鍵盤はイベントではなくなります。7. パフォーマンス を参照してください。</p>
+<ul><li>FEEDBACK（初期値: 42）: エコーがどれだけ続くか。</li><li>TONE（初期値: 50）: くり返しの暗さ明るさ。</li><li>TIME（初期値: 3/16）: 1回のくり返しの長さ。音価で出ます。3/16、1/8、1/4T、3/32。</li><li>LEVEL（初期値: 50）: エコーがどれだけ戻ってくるか。</li></ul>
+<p>ALGORITHM でエコーの種類を選びます。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: 5.14 ECHO (種類, くり返し)"><table><thead><tr><th>種類</th><th>くり返し</th></tr></thead><tbody><tr><td>PING-PONG</td><td>左右交互にくり返す。</td></tr><tr><td>STRAIGHT</td><td>両方のくり返しを真ん中に置く。</td></tr><tr><td>TAPE</td><td>揺れて暗く、少し歪む。</td></tr><tr><td>SMEAR</td><td>くり返すたびにぼけ、リバーブに近づく。</td></tr></tbody></table></div>
+<h3 id="s5-15">5.15 GLOBAL</h3>
+<div class="figs"><figure class="shot"><img src="../img/screen-global.png" alt="GLOBAL のページ。ルールに SAVE: KEEP IT と GLOBAL、Lights HIGH、Theme NEON、CPU 0%" loading="lazy"><figcaption>保存していない変更のある GLOBAL</figcaption></figure></div>
+<p>画面とボタンの設定、そして保存のページです（10. 保存 を参照）。</p>
+<ul><li>LIGHTS（初期値: LOW）: ボタンの光の強さ。OFF、LOW、HIGH。</li><li>THEME（初期値: NEON）: 画面の色と、その動き方。</li><li>CPU: オーディオが持ち時間の何パーセントを使っているか。読み取り専用で、ノブは何もしません。たとえば <code>83%!</code> と出ていたら、音楽が FM-1 の処理できる限界に近づいたので、数秒のあいだ音を少し簡単にしています。</li></ul>
+<div class="table" tabindex="0" role="region" aria-label="Table: 5.15 GLOBAL (THEME, 色と動き)"><table><thead><tr><th>THEME</th><th>色と動き</th></tr></thead><tbody><tr><td>NEON</td><td>すべての色相。</td></tr><tr><td>ACID</td><td>黄から緑。速く、大きく揺れ、拍ごとに衝撃があります。</td></tr><tr><td>INFRA</td><td>赤からマゼンタ。重く、ゆっくり。ドロップの跳びは2倍の大きさです。</td></tr><tr><td>ICE</td><td>シアンから青。淡く静か。ゆっくり浅く、ビルドでもほとんど回りません。</td></tr><tr><td>MONO</td><td>白と灰色。色相なし。</td></tr></tbody></table></div>
+<div class="figs"><figure class="shot"><img src="../img/screen-theme-neon.png" alt="THEME NEON。すべての色相の画面" loading="lazy"><figcaption>NEON</figcaption></figure><figure class="shot"><img src="../img/screen-theme-acid.png" alt="THEME ACID。黄と緑の画面" loading="lazy"><figcaption>ACID</figcaption></figure><figure class="shot"><img src="../img/screen-theme-infra.png" alt="THEME INFRA。赤とマゼンタの画面" loading="lazy"><figcaption>INFRA</figcaption></figure><figure class="shot"><img src="../img/screen-theme-ice.png" alt="THEME ICE。淡いシアンと青の画面" loading="lazy"><figcaption>ICE</figcaption></figure><figure class="shot"><img src="../img/screen-theme-mono.png" alt="THEME MONO。白と灰色の画面" loading="lazy"><figcaption>MONO</figcaption></figure></div>
+<hr>
+<h2 id="s6"><span class="num">6</span>鍵盤</h2>
+<p>鍵盤は音階を弾きません。押すと、音楽の中のイベントと同じ作りの一発ものの音が投げ込まれ、画面の右下にすぐ名前が出ます。ECHO 以外のどのページでもそうです（7. パフォーマンス を参照）。</p>
+<div class="figs"><figure class="shot"><img src="../img/screen-thrown.png" alt="白鍵を押したところ。レーンの右下に SQUELCH" loading="lazy"><figcaption>投げた音: SQUELCH</figcaption></figure><figure class="wide"><img src="../img/keys-throw.svg" alt="鍵盤。白鍵に左から1〜16の番号と音の名前（DIVE、GROWL、CROAK、SPRING、SIREN、ZAP、GURGLE、SQUELCH、DROP、BUZZ、RATTLE、CHIRP、LASER、BELL、TWEET、SPARK）、黒鍵に1〜11の番号とリズムの名前" loading="lazy"><figcaption>鍵の番号と、それぞれの音とリズム</figcaption></figure></div>
+<p>鍵には、白鍵と黒鍵それぞれ、左から番号を振っています（白鍵 1 が F3、黒鍵 1 が F#3 です）。</p>
+<p><strong>白鍵。</strong> 16あり、それぞれ別の音を持ちます（図を参照）。音は次の16分音符で鳴り、その鍵の音程から始まります。強く押すか、強く当てるほど、噛みつきが増えます。押し続けると 16分音符ごとにくり返され、そのたびに音が少しずつ変わります。鳴るのは一度にひとつで、ほかの鍵を押すと前の音と入れ替わります。投げたものは覚えられ、ときどき音楽自身のイベントがそれを使い回します。EVENTS ページの ALGORITHM で、すべてのイベントの種類を変えられます（5.9 を参照）。</p>
+<p><strong>黒鍵。</strong> 11あり、押し続けるとリズムになります。一緒に押している白鍵が、16分音符ごとではなく、そのリズムの拍で投げられます。8分や3連、32分は拍の中の決まった位置に、GALLOP と SLOWER は小節の中の決まった位置に入ります。WANDER、SCATTER、LEAP は音程が動きます。押すたびに新しい音の並びを作り、押している間は1小節ごとにそれをくり返します。単独で押しても音は出ません。離すと16分音符に戻ります。リズムの名前は、イベントの名前の左に出ます。</p>
+<div class="figs"><figure class="shot"><img src="../img/screen-rhythm.png" alt="黒鍵を押しながら白鍵を押したところ。右下に GALLOP と ZAP" loading="lazy"><figcaption>GALLOP と ZAP</figcaption></figure></div>
+<div class="table" tabindex="0" role="region" aria-label="Table: 鍵盤 (黒鍵, リズム)"><table><thead><tr><th>黒鍵</th><th>リズム</th></tr></thead><tbody><tr><td>1</td><td>3/16: 付点8分</td></tr><tr><td>2</td><td>1/8: 8分</td></tr><tr><td>3</td><td>1/8T: 8分3連</td></tr><tr><td>4</td><td>CLIMB: 16分で、毎回短3度ずつ上がる。8段</td></tr><tr><td>5</td><td>FALL: 同じく、下がる</td></tr><tr><td>6</td><td>WANDER: 16分で、音階を上がったり下がったりする</td></tr><tr><td>7</td><td>SCATTER: 16分で、1オクターブの中をあちこちへ跳ぶ</td></tr><tr><td>8</td><td>LEAP: 8分で、根音、5度、オクターブの間を跳ぶ</td></tr><tr><td>9</td><td>SLOWER: 4分。拍ごとに1回</td></tr><tr><td>10</td><td>FASTER: 32分。16分の倍の速さ</td></tr><tr><td>11</td><td>GALLOP: 拍ごとに x.xx</td></tr></tbody></table></div>
+<p><strong>OCT− と OCT+</strong> は、これら全体のオクターブを動かします。1つ下から2つ上まで。ヘッダーに OCTAVE と数字が出ます。</p>
+<p><strong>REC。</strong> REC を軽く押すと、次の小節を待ちます。ルールに <code>REC: NEXT BAR</code> と出て、REC がすばやく点滅します。その小節から REC が拍ごとに点滅し、鍵盤が投げたものが、落ちたところにそのままループへ入ります。ルールには <code>REC: BAR 1/4</code> から <code>4/4</code> まで、何小節目かが出ます。小節の頭の少し前に弾いた鍵盤は、その最初として入ります。4小節が終わると、ループはくり返し鳴り続け、REC が光ります。取り込んでいる間に REC を押すと、その小節の終わりで取り込みが終わり、そこまでの小節数（1〜4）のループになります（メッセージに <code>2 BARS</code> のように出て、ルールの数字も終わる小節を示します）。3小節のループは、4小節ずつのグルーヴに対して少しずつずれていきます。</p>
+<p>もう一度 REC を軽く押すと取り直しで、次の小節から前のループが消えて新しく取り込みます。待っている間に押すとやめます（<code>OFF</code>）。REC を長押しするとループが消えます（<code>CLEARED</code>）。PLAY で休んでも消えます。</p>
+<div class="figs"><figure class="shot"><img src="../img/screen-rec.png" alt="取り込んでいるところ。ルールの左に REC: BAR 1/4、右下に SPRING" loading="lazy"><figcaption>取り込みの途中、鍵盤を投げたところ</figcaption></figure></div>
+<hr>
+<h2 id="s7"><span class="num">7</span>パフォーマンス</h2>
+<p>ECHO ページ（FX）では、鍵盤はイベントではなくパフォーマンスになります。画面には格子が出ます。</p>
+<div class="figs"><figure class="shot"><img src="../img/screen-fx-held.png" alt="1/8、WASH、DUB の鍵を押している間、それらが光っている格子。ヘッダーに SPACE DUB" loading="lazy"><figcaption>3つのエフェクトを押しているところ</figcaption></figure><figure class="wide"><img src="../img/keys-fx.svg" alt="ECHO ページの鍵盤。白鍵1〜16にエフェクトの名前、4つずつ REPEAT、FILTER、SPACE、MOTION の段。黒鍵1〜11に KICK、BASS、PERC、EVENTS、LINE、ATMOS、FILL、HALF、GAP、K+B OUT、ALL" loading="lazy"><figcaption>ECHO ページでの鍵</figcaption></figure></div>
+<p><strong>白鍵: 16のエフェクト。</strong> 白鍵を低いほうから順に、画面の格子を1段ずつ、4段×4つで埋めます。どれも、鍵を押している間、ミックス全体にかかり、離すと止まります。各段のいちばん左の鍵は、段の目印として光ります。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: パフォーマンス (白鍵, 段, エフェクト, 働き)"><table><thead><tr><th>白鍵</th><th>段</th><th>エフェクト</th><th>働き</th></tr></thead><tbody><tr><td>1</td><td>REPEAT</td><td>1/4</td><td>音楽の4分音符ぶんをくり返す。次の拍から。</td></tr><tr><td>2</td><td>REPEAT</td><td>1/4T</td><td>4分3連ぶんをくり返す。次の拍から。</td></tr><tr><td>3</td><td>REPEAT</td><td>1/8</td><td>8分音符ぶんをくり返す。次の16分音符から。</td></tr><tr><td>4</td><td>REPEAT</td><td>1/8T</td><td>8分3連ぶんをくり返す。次の16分音符から。</td></tr><tr><td>5</td><td>FILTER</td><td>LOW</td><td>音が暗いほうへ滑り下りる。</td></tr><tr><td>6</td><td>FILTER</td><td>HIGH</td><td>音が高いほうへ滑り上がって、細くなる。</td></tr><tr><td>7</td><td>FILTER</td><td>FLANGE</td><td>短い遅れが揺れ動く。</td></tr><tr><td>8</td><td>FILTER</td><td>BAND</td><td>電話のような細い音。</td></tr><tr><td>9</td><td>SPACE</td><td>WASH</td><td>キックとベース以外が、大きなホールへ入る。くり返しはなく、雲のように包み、元の音は6割ほど沈む。離すと音楽が戻り、ホールは数秒かけて消える。</td></tr><tr><td>10</td><td>SPACE</td><td>DUB</td><td>キックとベース以外がエコーへ入り、戻りが持ち上がり、元の音は3割沈む。エコーは暗く長くなり、間隔がゆっくり伸びて、テープのように揺れ、音程が沈む。離すとばねのように戻る。</td></tr><tr><td>11</td><td>SPACE</td><td>FREEZE</td><td>キックとベースより上の音楽が、エコー1回ぶんだけエコーに取り込まれ、そこでループする。新たには何も入らず、元の音はその下に沈む。ECHO の LEVEL が低くても、エコーの戻りを高さのほとんどまで持ち上げ、そのあと2秒ほどかけて戻る。</td></tr><tr><td>12</td><td>SPACE</td><td>REVERSE</td><td>直前の1拍が逆再生される。</td></tr><tr><td>13</td><td>MOTION</td><td>TAPE</td><td>音楽が2拍かけて止まるまで遅くなる。</td></tr><tr><td>14</td><td>MOTION</td><td>RISER</td><td>ノイズの帯が2小節かけて上がる。</td></tr><tr><td>15</td><td>MOTION</td><td>STAIRS</td><td>16分音符がくり返され、そのたびに短3度ずつ上がる。2オクターブまで。</td></tr><tr><td>16</td><td>MOTION</td><td>GATE</td><td>キックとベースより上が16分音符で刻まれる。それらのエコーは続く。</td></tr></tbody></table></div>
+<p>REPEAT の4つ、REVERSE、TAPE、STAIRS は順番に入れ替わり、最後に押したものが鳴ります。それ以外は重なり、指の続く限り、いくつでも押さえられます。</p>
+<p><strong>黒鍵: 11、パートの操作。</strong> 格子の下の列にパートの名前が順に並び、その下の行に残りの名前が出ます。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: パフォーマンス (黒鍵, 働き)"><table><thead><tr><th>黒鍵</th><th>働き</th></tr></thead><tbody><tr><td>1</td><td>KICK のミュート。軽く押してミュート、もう一度で戻る。</td></tr><tr><td>2</td><td>BASS のミュート。</td></tr><tr><td>3</td><td>PERC のミュート。</td></tr><tr><td>4</td><td>EVENTS のミュート。</td></tr><tr><td>5</td><td>LINE のミュート。</td></tr><tr><td>6</td><td>ATMOS のミュート。</td></tr><tr><td>7</td><td>FILL: 次の拍がフィルになります。ベースが休み、クラップが駆け上がります。</td></tr><tr><td>8</td><td>HALF: 押している間、ハーフタイム。キックは1拍めと3拍めに入り、ベースは8分で転がります。</td></tr><tr><td>9</td><td>GAP: 小節のこれから来る最後の拍が、すべて無音になります。ドロップの前に。</td></tr><tr><td>10</td><td>KICK+BASS OUT: 押している間、キックとベースが抜けます。ブレイクのように。</td></tr><tr><td>11</td><td>ALL: ミュートしたパートがすべて戻ります。</td></tr></tbody></table></div>
+<p>ミュートしたパートは、画面で名前に打ち消し線がつき、その黒鍵も暗くなります。MIX の MUTE と同じものです。</p>
+<div class="figs"><figure class="shot"><img src="../img/screen-fx-muted.png" alt="KICK と LINE をミュートしたところ。名前に打ち消し線、ヘッダーに LINE MUTED" loading="lazy"><figcaption>KICK と LINE のミュート</figcaption></figure></div>
+<hr>
+<h2 id="s8"><span class="num">8</span>セクション</h2>
+<p>音楽はセクションをひとりで進み、あなたも呼べます。3つあります。グルーヴが本体です。ブレイクではキック、ベース、パーカッションが抜け、アトモスが前に出て、イベントが薄くなり、ラインはやわらぎます。そのあとにビルドが数小節来ます。種類はいくつかあります（5.4 を参照）。そしてドロップ。小節の頭ですべてが戻り、クラッシュが鳴ります。ドロップのあと、ベースはたいていほかの種類になり、イベントのループとラインのフレーズは描き直され、色が跳びます。音楽はぴったり元のままには戻りません。</p>
+<p><strong>ひとりで。</strong> BREAKS が 0 より上で、DRIFT も 0 より上なら、32小節のブロックの頭でブレイクが来ることがあり、最後のドロップから GAP 小節ほどたつまでは来ません。BREAK の LENGTH の小節数（または世界の長さ）続き、そのあとビルドとドロップがひとりでに続きます。起きやすさは BREAKS と DRIFT の組み合わせで、初期値ではおよそ3ブロックに1回です。AUTO PLAY の間は、セットが呼びます（5.5 を参照）。5.3 を参照してください。</p>
+<p><strong>呼ぶ。</strong> どれも次の小節まで待ち、音楽が鳴っている間だけ働きます。</p>
+<ul><li>SAVE: グルーヴからブレイクを呼びます。ブレイクかビルドの間は、いまどこにいるかを知らせるだけです。呼ばれている間と、ブレイクが続く間、SAVE は光ります。呼んだブレイクは、ビルドを呼ぶまで続きます。</li><li>ARP を軽く押す: グルーヴかブレイクからビルドを呼びます。ビルドの間なら、次の小節でドロップ。呼びが待っている間 ARP は光り、ビルドの間は拍ごとに点滅します。</li><li>ARP を半秒押し続ける: どこにいても、次の小節でドロップ。</li></ul>
+<div class="figs"><figure class="shot"><img src="../img/screen-break-cued.png" alt="グルーヴで SAVE を押したところ。ヘッダーに BREAK NEXT BAR、フレーズの下に BREAK &gt;" loading="lazy"><figcaption>ブレイクを呼んだところ</figcaption></figure><figure class="shot"><img src="../img/screen-break.png" alt="ブレイクの中。レーンはほとんど空で、その下に BREAK" loading="lazy"><figcaption>ブレイクの中</figcaption></figure><figure class="shot"><img src="../img/screen-build.png" alt="ビルドの中、BUILD ページ。レーンの下に BUILD、ルールの左に NOW FILTER PICKUP（AUTO が選んだ種類と終わり方）" loading="lazy"><figcaption>ビルドの中</figcaption></figure></div>
+<hr>
+<h2 id="s9"><span class="num">9</span>世界</h2>
+<p>PRESETS で世界を選びます。どの世界も、それぞれのテンポ、根音、ベースとパーカッション、一発ものの音とライン、アトモス、ブレイクを持つ場所です。切り替えは次の小節から。世界の名前はヘッダーにあります。ノブはどれも世界の中で効き、選んでもノブは動きません。8つあり、遅く湿ったものから速く細かいものへ並びます。</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: 世界 (世界, テンポ, 根音, ブレイク, 特徴)"><table><thead><tr><th>世界</th><th>テンポ</th><th>根音</th><th>ブレイク</th><th>特徴</th></tr></thead><tbody><tr><td>SWAMP RADIO</td><td>145</td><td>F</td><td>16小節</td><td>低くこもり、やわらかく吃るベース、湿ったクリック、厚い呟き。アトモスが大きく、ラインはめったに鳴りません。</td></tr><tr><td>UNDER THE ROOTS</td><td>148</td><td>E</td><td>24小節</td><td>深く長い。太く低いベース、ときどき唸り、沈む音、暗いうねり。</td></tr><tr><td>COLD SIGNAL</td><td>152</td><td>F#</td><td>16小節</td><td>冷たいダークサイ。硬く短い16分音符、半音で這う短いライン、レーザー、細いノイズの帯。起動したときの世界です。</td></tr><tr><td>RUBBER CIRCUS</td><td>156</td><td>G</td><td>8小節</td><td>弾む。ベースがときどき跳ね、しゃべるようなライン、うがい音、突然の転換。ときどき3連の小節が入り、ギャロップも多め。</td></tr><tr><td>BLACK UNDERTOW</td><td>160</td><td>E</td><td>16小節</td><td>重い。歪んだベース、長く引きずるライン、呻き。ブレイクが大きい。</td></tr><tr><td>COPPER NERVE</td><td>168</td><td>F</td><td>8小節</td><td>引き締まっている。短い金属的なくり返し、階段が始まり、8分にライド、3連の小節もわりに多め。</td></tr><tr><td>GLASS INSECTS</td><td>176</td><td>F#</td><td>8小節</td><td>明るいハイテック。きれいな16分音符、明るく金属的なライン、左右へ飛ぶ階段、ライド。</td></tr><tr><td>CHROME SWARM</td><td>186</td><td>G</td><td>4小節</td><td>速く細かい。ラインの断片とイベントにディテールがあり、いちばん密で、いつも変わり続け、ライドがあり、グルーヴの間はアトモスがほとんどありません。</td></tr></tbody></table></div>
+<hr>
+<h2 id="s10"><span class="num">10</span>保存</h2>
+<p>GLOBAL で SAVE を軽く押すと、すべてを保存します。世界、全ページのすべてのノブ、Lights、Theme。次に FM-1 を起動したときに戻ってきます。保存していないものがある間、GLOBAL ではルールに <code>SAVE: KEEP IT</code> と出て SAVE は光ったままで、保存が済むとヘッダーに <code>SAVED</code> と出ます（できなければ <code>SAVE FAILED</code>）。ほかのページでは SAVE はブレイクを呼ぶので（8. セクション を参照）、保存は GLOBAL で行います。</p>
+<p>ALGORITHM で選んだ種類や形、ミュートしたパート、オクターブ、鍵盤のループ、AUTO PLAY の ON は保存されません。音楽は毎回、世界のままの音で始まります。新しいバージョンで保存する内容が変わると、更新後の最初の起動では、初期値に戻っていることがあります。</p>
+<p><strong>初期値に戻す。</strong> GLOBAL で SAVE を1.5秒押し続けます。全ページのすべてのノブが、最初の値に戻ります（テンポと根音は世界のまま）。世界、Lights、Theme はそのままです。ヘッダーに <code>DEFAULTS</code> と出ます。SAVE を軽く押すまで保存はされません。</p>
+<hr>
+<h2 id="s11"><span class="num">11</span>MIDI</h2>
+<p>MIDI 入力はいつも受けています。USB と TRS ジャックから、どのチャンネルでも受けます。DAW などがつながっていると、そこから来るクロックやスタート、ストップにも従うので、合わせたくないときは相手の送信を止めてください。</p>
+<ul><li>ノート: ノートは、対応する鍵が投げるはずの音を投げます（6. 鍵盤 を参照）。どのページでもそうで、ECHO でも、鍵盤がエフェクトを操作している間にノートは音を投げます。鍵盤は F3 から G5（MIDI ノート 53〜79）です。範囲の外のノートは、オクターブごと折り返して入れます。ベロシティも効き、ノートオフで押し続けた音が終わります。黒鍵のリズムも働きます。</li><li>スタート: 頭から鳴らします。すでに鳴っていれば、頭からやり直します。</li><li>コンティニュー: 鳴らします。</li><li>ストップ: 休みます。</li><li>クロック: テンポがそれに従います。125〜220 BPM の範囲で。ヘッダーには従っているテンポが出て、TEMPO ノブは脇に置かれます。従うのは速さだけで、拍の位置は合わせません。クロックが止まると、世界のテンポが戻ります。AUTO PLAY も、クロックがある間はそのテンポに従います。</li></ul>
+<p>スタート、コンティニュー、ストップは、ロゴの間の無音もすぐ終わらせます（2. 起動 を参照）。</p>
+<hr>
+<h2 id="s12"><span class="num">12</span>USB オーディオ</h2>
+<p>USB ケーブルをつなぐと、FM-1 はコンピューターのオーディオ入力として現れます。どんな録音ソフトでも、そこから音楽を録音できます。</p>
+<hr>
+<h2 id="s13"><span class="num">13</span>困ったとき</h2>
+<p>音が出ないときは、PLAY が光っているか、MASTER が上がっているかを確かめてください。ロゴが出ている間は無音です。パートがミュートされているかもしれません（7. パフォーマンス を参照）。ブレイクの間は、しばらくキック、ベース、パーカッションが消えます（8. セクション を参照）。</p>
+<p>色が出ないときは、GLOBAL の THEME を確かめてください。MONO には色がありません。</p>
+<p>CPU が <code>%!</code> と出ているときは、音楽がしばらく軽くなっています（5.15 を参照）。</p>
+<p>インストーラーが FM-1 を見つけないときは、Chrome か Edge を使い、ブラウザが尋ねたら MIDI を許可し、FM-1 の MIDI ポートを使っているほかのプログラムを閉じてください。</p>
+<p>M-VAVE 純正のファームウェアに戻すには、インストーラーの最後の項目で書き戻します。インストール後に FM-1 が起動しないときは、2回起動に失敗するとセーフモードで立ち上がり、インストーラーから届きます。</p>
+<hr>
+<h2 id="s14"><span class="num">14</span>ライセンス</h2>
+<p>RhinoTiger は GPL-3.0-only です。fm1-base（MPL-2.0）と felucca-bsp の上に作られていて、どちらも Hügelton Instruments の Leo Kuroshita による Felucca に由来します。また、Charles Vestal による fm1-base のテンプレートから始まりました。ロゴの文字は Noto Sans JP Black（SIL Open Font License 1.1）から描き起こしたものです。ソースは https://github.com/hacha/rhinotiger にあります。</p>
+<p>M-VAVE と FM-1 はそれぞれの所有者の商標です。RhinoTiger は M-VAVE とは関係ありません。</p>
+</main>
+</div>
+<script>
+(() => {  // the contents beside the text: the section in view
+  const links = [...document.querySelectorAll('aside.toc a')];
+  const heads = links.map(a => document.getElementById(a.hash.slice(1))).filter(Boolean);
+  if (!heads.length) return;
+  const mark = () => {
+    let i = 0;
+    heads.forEach((h, j) => { if (h.getBoundingClientRect().top < innerHeight * .3) i = j; });
+    links.forEach((a, j) => a.classList.toggle('here', j === i));
+  };
+  addEventListener('scroll', mark, {passive: true}); mark();
+})();
+</script>
+</body>
+</html>
